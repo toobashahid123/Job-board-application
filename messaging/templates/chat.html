@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #e5e5e5;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+            align-self: flex-start;
+            display: block;
+        }
+        .message.userA {
+            background-color: #d1e7dd; /* Light green */
+            color: #0f5132; /* Dark green text */
+            align-self: flex-end; /* Align to the right */
+        }
+        .message.userB {
+            background-color: #d6d6d6; /* Light gray */
+            color: #6c757d; /* Dark gray text */
+            align-self: flex-start; /* Align to the left */
+        }
+        #inputContainer {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #sendButton {
+            padding: 10px;
+            margin-left: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatBox"></div>
+    <div id="inputContainer">
+        <input id="messageInput" type="text" placeholder="Type your message here...">
+        <button id="sendButton">Send</button>
+    </div>
+
+    <script>
+        const roomName = "general"; // Room name
+        const userId = 'userA'; // Example user identifier, change accordingly
+        const chatSocket = new WebSocket(`ws://127.0.0.1:8001/ws/chat/${roomName}/`);
+
+        // Color mapping for users
+        const userColors = {
+            'userA': '#d1e7dd', // Light green
+            'userB': '#d6d6d6', // Light gray
+        };
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const messageElement = document.createElement('div');
+            const userColor = userColors[data.user] || '#ffffff'; // Default color
+
+            messageElement.className = 'message';
+            messageElement.style.backgroundColor = userColor;
+            messageElement.innerText = data.message;
+            document.getElementById('chatBox').appendChild(messageElement);
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.getElementById('sendButton').onclick = function() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            chatSocket.send(JSON.stringify({'message': message, 'user': userId}));
+            messageInput.value = '';
+        };
+
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('sendButton').click();
+            }
+        });
+    </script>
+</body>
+</html>

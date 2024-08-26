@@ -31,27 +31,27 @@ Welcome to the Job Board Application! This project is a full-featured job board 
 
 Follow these steps to set up the project on your local machine:
 
-1- Clone the repository:
+1- **Clone the repository:**
    git clone https://github.com/toobashahid123/Job-board-application.git
    cd Job-board-application/jobboard
 
-2- Create a virtual environment and activate it:
+2- **Create a virtual environment and activate it:**
    python -m venv venv
    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
-3- Install the required Python packages:
+3- **Install the required Python packages:**
    pip install -r requirements.txt
 
-4- Run database migrations:
+4- **Run database migrations:**
    python manage.py migrate
 
-5- Create a superuser for accessing the Django admin panel:
+5- **Create a superuser for accessing the Django admin panel:**
    python manage.py createsuperuser
 
-6- Run the development server:
+6- **Run the development server:**
    python manage.py runserver
 
-8- Access the application:
+7- **Access the application:**
    Admin Panel: http://127.0.0.1:8000/admin/
    Job Board: http://127.0.0.1:8000/
 
